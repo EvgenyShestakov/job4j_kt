@@ -1,8 +1,17 @@
 package ru.job4j.base
 
-fun max(first: Int, second: Int): Int = if (first > second) first else second
+fun max(first: Int, second: Int): Int =
+    if (first > second) first else second
 
-fun max(first: Int, second: Int, third: Int): Int = if (max(first, second) > third) max(first, second) else third
+fun max(vararg numbers: Int): Int {
+    var max = Int.MIN_VALUE
+    for (number in numbers) {
+        if (number > max) {
+            max = number
+        }
+    }
+    return max
+}
 
 fun main() {
     val maxOfTwoNumber = max(1, 2)
