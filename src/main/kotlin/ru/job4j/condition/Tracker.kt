@@ -1,7 +1,7 @@
 package ru.job4j.condition
 
 class Tracker {
-    private val items = ArrayList<Item>();
+    private val items = mutableListOf<Item>()
     private var ids = 1
 
     fun add(item: Item): Item {
@@ -20,43 +20,26 @@ class Tracker {
     }
 
     fun findByName(key: String): List<Item> {
-        val names = ArrayList<Item>()
-        for (index in 0 until items.size) {
-            val item = items[index]
-            if (item.name == key) {
-                names.add(item)
-            }
-        }
-        return names
+        return items.filter { item -> item.name == key }
     }
 
     fun replace(id: Int, replacement: Item): Boolean {
         val index = indexOf(id)
-        val rsl = index != -1
-        if (rsl) {
+        return if (index != -1) {
             replacement.id = id
             items[index] = replacement
-        }
-        return rsl;
+            true
+        } else false
     }
 
     fun delete(id: Int): Boolean {
         val index = indexOf(id)
-        val rsl = index != -1
-        if (rsl) {
-            items.removeAt(index);
-        }
-        return rsl;
+        return if (index != -1) {
+            items.removeAt(index)
+            true
+        } else false
     }
 
-    private fun indexOf(id: Int): Int {
-        var rsl = -1
-        for (index in 0 until items.size) {
-            if (items[index].id == id) {
-                rsl = index;
-                break
-            }
-        }
-        return rsl
-    }
+    private fun indexOf(id: Int): Int =
+        items.indexOfFirst { it.id == id }
 }
