@@ -7,8 +7,17 @@ class StudentTest {
 
     @Test
     fun whenCreateStudent() {
-        val vasia = Student(name = "Вася", surname = "Пупкин", phone = "7512255")
-        val tolia = Student(name = "Толя", surname = "Канарейкин", phone = "4568244", email = "tolian7384@mail.ru")
+        val vasia = Student(
+            name = "Вася",
+            surname = "Пупкин",
+            phone = "7512255",
+        )
+        val tolia = Student(
+            name = "Толя",
+            surname = "Канарейкин",
+            phone = "4568244",
+            email = "tolian7384@mail.ru",
+        )
 
         assertThat(vasia)
             .hasFieldOrPropertyWithValue("name", "Вася")
