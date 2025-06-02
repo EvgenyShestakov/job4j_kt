@@ -25,19 +25,23 @@ class Tracker {
 
     fun replace(id: Int, replacement: Item): Boolean {
         val index = indexOf(id)
-        return if (index != -1) {
-            replacement.id = id
-            items[index] = replacement
-            true
-        } else false
+        val ok = index != -1
+        if (!ok) {
+            return false
+        }
+        replacement.id = id
+        items[index] = replacement
+        return true
     }
 
     fun delete(id: Int): Boolean {
         val index = indexOf(id)
-        return if (index != -1) {
-            items.removeAt(index)
-            true
-        } else false
+        val ok = index != -1
+        if (!ok) {
+            return false
+        }
+        items.removeAt(index)
+        return true
     }
 
     private fun indexOf(id: Int): Int =
