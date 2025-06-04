@@ -1,24 +1,22 @@
 package ru.job4j.condition
 
-fun main() {
-    val tracker = Tracker()
-    val actions = listOf("Create", "ShowAll", "Delete", "Exit")
-    init(tracker, actions)
-}
+class StartUI(val output: Output) {
 
-fun init(tracker: Tracker, actions: List<String>) {
-    while (true) {
-        UserAction.showMenu(actions)
-        print("Select number of menu: ")
-        val select = readln().toIntOrNull()
-        when (select) {
-            0 -> UserAction.createAction(tracker)
-            1 -> UserAction.showAll(tracker)
-            2 -> UserAction.deleteAction(tracker)
-            3 -> break
-            else -> {
-                println("Wrong input, you can select: 0 .. 3")
+    fun init(tracker: Tracker, actions: List<UserAction>, input: Input) {
+        var run: Boolean = true
+        while (run) {
+            showMenu(actions)
+            val select = input.ascInt("Select number of menu: ")
+            if (select == null || select !in actions.indices) {
+                output.println("Wrong input, you can select: 0 ${actions.size - 1}")
+                continue
             }
+            run = actions[select].execute(tracker, input)
         }
+    }
+
+    private fun showMenu(actions: List<UserAction>) {
+        output.println("Menu.")
+        actions.forEachIndexed { index, action -> println("$index. ${action.getName()}") }
     }
 }
