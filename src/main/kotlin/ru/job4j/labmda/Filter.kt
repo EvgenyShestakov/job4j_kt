@@ -10,3 +10,5 @@ fun main() {
     val filtered = accounts.filter { it.name == "Ivan" && it.balance > 0 }
     println(filtered)
 }
+
+data class Account(val name: String, val balance: Double)
