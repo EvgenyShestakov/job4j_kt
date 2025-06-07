@@ -9,7 +9,7 @@ class SimpleLinked<T> : Iterable<T> {
     fun size(): Int = size
 
     fun add(value: T) {
-        val newNode: Node<T> = Node(
+        val newNode = Node(
             value = value,
         )
 
@@ -29,7 +29,7 @@ class SimpleLinked<T> : Iterable<T> {
         if(index !in 0 until size) {
             throw IndexOutOfBoundsException("Index $index out of bound for size $size")
         }
-        val iterator: Iterator<T> = this.iterator()
+        val iterator = iterator()
         repeat(index) { iterator.next() }
         return iterator.next()
     }
