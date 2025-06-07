@@ -7,8 +7,8 @@ fun main() {
         Account("Ivan", -254.32),
         Account("Dmitry", 356.12)
     )
-    val filtered = accounts.filter { it.name == "Ivan" && it.balance > 0 }
-    println(filtered)
+    val filterUser: (Account) -> Boolean = { it.name == "Ivan" && it.balance > 0 }
+    println(accounts.filter(filterUser))
 }
 
 data class Account(val name: String, val balance: Double)

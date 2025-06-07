@@ -14,7 +14,8 @@ class FilterTest {
             Account("Ivan", -254.32),
             Account("Dmitry", 356.12)
         )
-        val filtered = accounts.filter { it.name == "Ivan" && it.balance > 0 }
+        val filterUser: (Account) -> Boolean = { it.name == "Ivan" && it.balance > 0 }
+        val filtered = accounts.filter(filterUser)
         assertThat(filtered.size).isEqualTo(1)
         assertThat(filtered).containsExactly(Account("Ivan", 856.32))
     }
