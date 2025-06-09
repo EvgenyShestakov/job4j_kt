@@ -1,10 +1,7 @@
-package ru.job4j
+package ru.job4j.safe
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import ru.job4j.safe.Account
-import ru.job4j.safe.BankService
-import ru.job4j.safe.User
 
 class BankServiceTest {
 
