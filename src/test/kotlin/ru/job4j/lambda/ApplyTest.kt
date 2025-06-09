@@ -2,7 +2,7 @@ package ru.job4j.lambda
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import ru.job4j.labmda.table
+import ru.job4j.labmda.buildTable
 
 class ApplyTest {
 
@@ -15,6 +15,6 @@ class ApplyTest {
          <tr><td></td><td></td><td></td><td></td></tr>
         </table>
         """.trimIndent()
-        assertThat(table(3, 4).trimIndent()).isEqualTo(expectedTable)
+        assertThat(buildTable(3, 4).trimIndent()).isEqualTo(expectedTable)
     }
 }

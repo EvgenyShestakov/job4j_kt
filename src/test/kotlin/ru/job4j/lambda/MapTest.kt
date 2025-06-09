@@ -56,12 +56,11 @@ class MapTest {
                 created = LocalDate.of(1994, 7, 5)
             )
         )
-        val companyViews = companies.map {
-            """Company name ${it.name}.
+        val mapCompany: (Company) -> String = {"""Company name ${it.name}.
         | Address: ${it.address.country}, ${it.address.city}, ${it.address.street},
         |  ${it.address.building}.
-        |   Create by ${it.created}""".trimMargin()
-        }
+        |   Create by ${it.created}""".trimMargin() }
+        val companyViews = companies.map(mapCompany)
         assertThat(companyViews).isEqualTo(expectedResult)
     }
 }
