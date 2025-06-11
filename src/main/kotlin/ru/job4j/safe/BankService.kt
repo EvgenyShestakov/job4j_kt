@@ -28,20 +28,16 @@ class BankService {
     }
 
     fun transferMoney(
-        srcPassport: String,
-        srcRequisite: String,
-        destPassport: String,
-        destRequisite: String,
-        amount: Double
-    ): Boolean = findByRequisite(srcPassport, srcRequisite)?.let { source ->
-        findByRequisite(destPassport, destRequisite)?.let { dest ->
-            if (source.balance >= amount) {
-                source.balance -= amount
-                dest.balance += amount
-                true
-            } else {
-                false
-            }
+        srcPassport: String, srcRequisite: String,
+        destPassport: String, destRequisite: String, amount: Double,
+    ): Boolean {
+        val source = findByRequisite(srcPassport, srcRequisite)
+        val dest = findByRequisite(destPassport, destRequisite)
+        val rsl = source != null && dest != null && source.balance > amount
+        if (rsl) {
+            source.balance -= amount
+            dest.balance += amount
         }
-    } == true
+        return rsl
+    }
 }
