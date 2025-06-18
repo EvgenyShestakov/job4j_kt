@@ -1,6 +1,6 @@
 package ru.job4j.condition
 
-fun createAction(): (Tracker, Input, Output) -> Boolean = { tracker, input, output ->
+fun createAction(tracker: Tracker, input: Input, output: Output): () -> Boolean = {
     output.println("=== Create a new Item ====")
     val name = input.ascString("Enter name: ")
     val item = Item(name = name)
@@ -8,7 +8,7 @@ fun createAction(): (Tracker, Input, Output) -> Boolean = { tracker, input, outp
     true
 }
 
-fun deleteAction(): (Tracker, Input, Output) -> Boolean = { tracker, input, output ->
+fun deleteAction(tracker: Tracker, input: Input, output: Output): () -> Boolean = {
     output.println("=== Delete item ===")
     val id = input.ascInt("Enter Id: ")
     when {
@@ -19,7 +19,7 @@ fun deleteAction(): (Tracker, Input, Output) -> Boolean = { tracker, input, outp
     true
 }
 
-fun showAllAction(): (Tracker, Input, Output) -> Boolean = { tracker, input, output ->
+fun showAllAction(tracker: Tracker, output: Output): () -> Boolean = {
     output.println("=== Show all items ===")
     val items = tracker.findAll()
     if (items.isNotEmpty()) {
@@ -30,7 +30,7 @@ fun showAllAction(): (Tracker, Input, Output) -> Boolean = { tracker, input, out
     true
 }
 
-fun exitAction(): (Tracker, Input, Output) -> Boolean = { _, _, output ->
+fun exitAction(output: Output): () -> Boolean = {
     output.println("=== Exit ===")
     false
 }
