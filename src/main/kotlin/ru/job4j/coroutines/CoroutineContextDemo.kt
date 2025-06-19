@@ -1,32 +1,87 @@
 package ru.job4j.coroutines
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
+import kotlin.coroutines.cancellation.CancellationException
 
-fun main() = runBlocking {
-    val job1 = launch(Dispatchers.IO) {
-        println("Запуск первой корутины с Dispatchers.IO")
-        delay(2000L)
-        println("Завершение работы первой корутины")
+fun main() {
+    val query = "replicaRequest"
+    fun searchByName(query: String): String = "search by name: $query"
+    fun searchByPhone(query: String): String = "search by phone: $query"
+    fun searchByEmail(query: String): String = "search by email: $query"
+    val searches: List<(String) -> String> = listOf(::searchByName, ::searchByPhone, ::searchByEmail)
+    runBlocking {
+        println("Run with while: ${searchWithWhile(query, searches)}")
+        println("Run with select: ${searchWithSelect(query, searches)}")
+    }
+}
+
+suspend fun searchWithWhile(
+    query: String,
+    searchers: List<(String) -> String>,
+): String = coroutineScope {
+
+    val deferreds: List<Deferred<String>> = launchSearchers(
+        query,
+        searchers
+    )
+
+    while (true) {
+        deferreds.forEach { job ->
+            if (job.isCompleted) {
+                try {
+                    val result = job.await()
+                    if (result.isNotEmpty()) {
+                        deferreds.forEach { if (!it.isCompleted) it.cancel() }
+                        return@coroutineScope result
+                    }
+                } catch (ex: CancellationException) {
+                    println("Coroutine wa cancelled ${ex.message}")
+                }
+            }
+        }
+        delay(10)
     }
 
-    val job2 = launch(Dispatchers.Default) {
-        println("Запуск второй корутины с Dispatchers.Default")
-        delay(3000)
-        println("Завершение работы второй корутины")
+    return@coroutineScope ""
+}
+
+suspend fun searchWithSelect(
+    query: String,
+    searchers: List<(String) -> String>,
+): String = coroutineScope {
+
+    val deferreds: List<Deferred<String>> = launchSearchers(
+        query,
+        searchers
+    )
+
+    return@coroutineScope select<String> {
+        deferreds.forEach { job ->
+            job.onAwait { answer ->
+                if (answer.isNotEmpty()) {
+                    deferreds.forEach { if (!it.isCompleted) it.cancel() }
+                    answer
+                } else {
+                    ""
+                }
+            }
+        }
     }
+}
 
-    val job3 = launch(Dispatchers.Unconfined) {
-        println("Запуск третьей корутины с Dispatchers.Unconfined")
-        delay(4000)
-        println("Завершение работы третьей корутины")
+private fun <T> CoroutineScope.launchSearchers(
+    query: String,
+    searchers: List<(String) -> T>,
+): List<Deferred<T>> = searchers.map { searchFunc ->
+    async(Dispatchers.IO) {
+        delay((200..500).random().toLong())
+        searchFunc(query)
     }
-
-    job1.join()
-    job2.join()
-    job3.join()
-
-    println("Все задачи завершены")
 }
