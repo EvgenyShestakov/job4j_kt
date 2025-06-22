@@ -9,14 +9,14 @@ class PromotionTest {
     @Test
     fun whenPromotionNotEquals() {
         val blackFridayPromo = Promotion(
-            "Black Friday",
-            "US",
-            LocalDate.of(2025, 1, 24)
+            name = "Black Friday",
+            currency = "US",
+            date = LocalDate.of(2025, 1, 24)
         )
         val sale50Promo = Promotion(
-            "50% Off Everything",
-            "US",
-            LocalDate.of(2025, 4, 10)
+            name = "50% Off Everything",
+            currency = "US",
+            date = LocalDate.of(2025, 4, 10)
         )
         assertThat(blackFridayPromo).isNotEqualTo(sale50Promo)
     }
@@ -24,14 +24,14 @@ class PromotionTest {
     @Test
     fun whenPromotionEquals() {
         val blackFridayPromo = Promotion(
-            "Black Friday",
-            "US",
-            LocalDate.of(2025, 1, 24)
+            name = "Black Friday",
+            currency = "US",
+            date = LocalDate.of(2025, 1, 24)
         )
         val blackFridayPromo2 = Promotion(
-            "Black Friday",
-            "US",
-            LocalDate.of(2025, 1, 24)
+            name = "Black Friday",
+            currency = "US",
+            date = LocalDate.of(2025, 1, 24)
         )
         assertThat(blackFridayPromo).isEqualTo(blackFridayPromo2)
     }
