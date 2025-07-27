@@ -14,6 +14,7 @@ dependencies {
     implementation("org.apache.commons:commons-dbcp2:2.7.0")
     implementation("org.assertj:assertj-core:3.24.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.2")
 
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.1")

@@ -1,5 +1,6 @@
 package ru.job4j.coroutines
 
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -9,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.File
 
 fun main() {
     runBlocking {
@@ -36,26 +38,27 @@ fun main() {
 
 suspend fun survey(
     fileName: String,
-    answers: ReceiveChannel<String>
+    answers: ReceiveChannel<String>,
 ): Int {
-    val stream = object {}.javaClass.classLoader
-        .getResourceAsStream(fileName) ?: error("Файл $fileName не найден")
+    val file = File(fileName)
+    if (!file.exists()) error("Файл $fileName не найден")
+    val questions: List<List<String>> = csvReader {
+        delimiter = ';'
+    }.readAll(file)
 
     var score = 0
-    stream.bufferedReader().useLines { lines ->
-        for (line in lines) {
-            val (question, right) = line.split(';')
-            println(question)
+    for (row in questions) {
+        if (row.size < 2) continue
+        println(row[0])
 
-            val answer = answers.receiveCatching().getOrNull()
-                ?: return score
+        val answer = answers.receiveCatching().getOrNull()
+            ?: return score
 
-            if (answer.trim() == right.trim()) {
-                score++
-                println("Правильный ответ")
-            } else {
-                println("Неправильный ответ")
-            }
+        if (answer.trim() == row[1].trim()) {
+            score++
+            println("Правильный ответ")
+        } else {
+            println("Неправильный ответ")
         }
     }
     return score
