@@ -1,14 +1,12 @@
 package ru.job4j.coroutines
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.atomic.AtomicReference
 
 fun main() {
     runBlocking {
@@ -22,25 +20,22 @@ suspend fun search(
     query: String,
     searchers: List<suspend (String) -> String>,
 ): String = coroutineScope {
-    val atomic = AtomicReference<String>()
-    val latch = CountDownLatch(1)
+    val channel = Channel<String>()
     val jobs = searchers.map { searchFunction ->
         launch(Dispatchers.IO) {
             val rsl = searchFunction(query)
-            if (rsl.isNotEmpty() && latch.count > 0) {
-                atomic.set(rsl)
-                latch.countDown()
+            if (rsl.isNotEmpty()) {
+                channel.send(rsl)
             }
         }
     }
-    withTimeoutOrNull(2000) {
-        withContext(Dispatchers.IO) {
-            latch.await()
-        }
-    }
 
+    val result = withTimeoutOrNull(2000) {
+        channel.receive()
+    } ?: ""
     jobs.forEach { it.cancel() }
-    atomic.get() ?: ""
+    channel.close()
+    result
 }
 
 suspend fun fast(query: String): String {
